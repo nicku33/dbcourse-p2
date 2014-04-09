@@ -1,0 +1,15 @@
+Build, code and dump a 'splash table', a very efficient type of hash
+
+SplashTable.build()
+SplashTable.dump()
+SplashTable.probe()
+
+Makefile generatex execuatable:
+
+splash B R S h inputfile dumpfile probefile resultfile
+
+
+
+Part #2
+
+probe dumpfile < probefile > resultfile
