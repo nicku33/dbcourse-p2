@@ -48,8 +48,7 @@ void dump( outputIterator o) {
 
 
 int probe( int key){
-	/* returns -1 if not present else paylod */
-
+	/* returns 0 if not present else paylod */
 
 }
 

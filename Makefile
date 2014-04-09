@@ -1,7 +1,5 @@
-
-
 default:
-	gcc -a splash Main.cpp
+	gcc -o splash Main.cpp
 
 run:
 	./splash

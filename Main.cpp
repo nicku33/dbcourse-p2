@@ -19,7 +19,7 @@ vector<string> &split(const string &s, char delim, vector<string> &elems);
     
 int main(int argc, char* argv[]){
     string dumbFileName, inputFileName;
-    int B, S, h, R;
+    int B, R, S, h;
 
     //Initialize arguments
     switch (argc) {
@@ -30,9 +30,9 @@ int main(int argc, char* argv[]){
             
         case 6: //No dumbfile
             B = stoi(argv[1]);
-            S = stoi(argv[2]);
-            h = stoi(argv[3]);
-            R = stoi(argv[4]);
+            R = stoi(argv[2]);
+            S = stoi(argv[3]);
+            h = stoi(argv[4]);
             inputFileName = argv[5];
             break;
         default:
