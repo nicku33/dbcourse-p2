@@ -73,16 +73,19 @@ int main(int argc, char* argv[]){
         exit(EXIT_FAILURE);
     }
     
-    //Test override of system in
+//    if(dumpFileName){ same as (dumpFileName != null)
+//        //Make dumpfile if a dumpfile name is entered
+//        sTable.dump(dumbFileName);
+//    }
+    
+    //Probe table with overwritten system in/out
     int probeKey;
     while (cin >> probeKey) {
         //Just shows it's working
-//        cout << probe << "\n";
-        
 //        int result = sTable.probe(probeKey);
 //        if(result){
             //Prints the result to resultfile
-            cout << probeKey << "\n"; //Should be result
+            cout << probeKey << "\n"; //Should be 'result'
         //}
             
     }
@@ -100,4 +103,6 @@ vector<string> &split(const string &s, char delim, vector<string> &elems) {
     }
     return elems;
 }
+
+
 
