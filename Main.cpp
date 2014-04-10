@@ -3,15 +3,16 @@
 //
 //  Created by Anders Rydbirk and Nickolas Ursa
 //
-
-#include "Main.h"   //Header
 #include <stdio.h>
+#include <iostream>
 #include <fstream>  //For reading inputfile
 #include <string>   //For reading inputfile
 #include <sstream>  //For splitting inputfile line
 #include <vector>   //For splitting inputfile line
 #include <exception>//invalid_argument exception
 #include <stdlib.h> //exit, EXIT_FAILURE
+
+#include "Table.h" //To be replaced by actual file
 
 using namespace std;
 
@@ -40,10 +41,9 @@ int main(int argc, char* argv[]){
             exit(EXIT_FAILURE);
             break;
     }
-    
     //SplashTable.init with parameters
     //sTable = new SplashTable();
-    //sTable.init(B, S, h, R);
+    init(B, S, h, R);
     
     //Reads the inputfile and parses it to sTable
     
@@ -56,14 +56,13 @@ int main(int argc, char* argv[]){
                 split(line, ' ', input);
                 
                 //Calls build method for each line
-                //if(!sTable.build(stoi(input[0]), stoi(input[1]))){ //It failed to insert
-                //  sTable.dump();
-                //  exit(EXIT_FAILURE);
-                //}
-                
+                if(!build(stoi(input[0]), stoi(input[1]))){ //It failed to insert
+                    dump();
+                    exit(EXIT_FAILURE);
+                }
                 
                 //Prints the content of the file, line by line
-                cout << stoi(input[0]) << " " << stoi(input[1]) << "\n";
+                //cout << stoi(input[0]) << " " << stoi(input[1]) << "\n";
             }
         }
         
@@ -73,36 +72,42 @@ int main(int argc, char* argv[]){
         exit(EXIT_FAILURE);
     }
     
-//    if(dumpFileName){ same as (dumpFileName != null)
-//        //Make dumpfile if a dumpfile name is entered
-//        sTable.dump(dumbFileName);
-//    }
+    //    if(dumpFileName){ same as (dumpFileName != null)
+    //        //Make dumpfile if a dumpfile name is entered
+    //        sTable.dump(dumbFileName);
+    //    }
     
     //Probe table with overwritten system in/out
     int probeKey;
     while (cin >> probeKey) {
         //Just shows it's working
-//        int result = sTable.probe(probeKey);
-//        if(result){
+        int result = probe(probeKey);
+        if(result){
             //Prints the result to resultfile
-            cout << probeKey << "\n"; //Should be 'result'
-        //}
-            
+            cout << result << "\n"; //Should be 'result'
+        }
+        
     }
+    
 }
 
 /**
  * Returns a vector holding the input that is split on whitespaces.
  */
 vector<string> &split(const string &s, char delim, vector<string> &elems) {
+    //Clears the vector
     elems.clear();
     stringstream ss(s);
     string item;
+    //Runs through the stringstream until the delimiter is reached
     while (getline(ss, item, delim)) {
+        //Inserts the found in the back of the vector
         elems.push_back(item);
     }
     return elems;
 }
+
+
 
 
 
