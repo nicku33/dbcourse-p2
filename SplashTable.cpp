@@ -3,11 +3,13 @@
 #include<ostream>
 #include<iostream>
 
+// maybe we should use a bucket struct instead later
+/*
 struct Bucket {
 	int count;
 	int storage[];
 };
-
+*/
 class Hash {
 
 	int seed;
@@ -19,7 +21,6 @@ public:
 	}
 	
 	// TODO: This is a garbage implementation
-
 	int get( int v){
 		float f = 1/seed;
 		int a = (int) v * f;
@@ -39,6 +40,11 @@ class SplashTable {
 	Hash hashes[];
 
 	void init() {
+		hashes=new 
+		for(i=1; i< this->s; i++){
+				
+		}
+		
 		/* need to allocate memory to zero */
 		// TODO: allocate our main struct, memory, etc
 	}
@@ -96,18 +102,18 @@ class SplashTable {
 			int random_index=rand() % b;
 
 			// swap out the old value and put in the new
-			int v_new = buckets[hashed_values[random_bucket]]->storage[random_index];
-			buckets[hashed_values[random_bucket]]->storage[random_index] = v;
-
+			int v_swap = this->table[random_bucket][random_index];
+			table[random_bucket][random_index]=v;
 			// and recurse
-			return insert(v_new,l++);
+			return insert(v_swap, l++);
 		} else {
 			// we had room, do the storage
 			// we need to find the first available spot
+			
 			for(int i=0;i<s;i++){
-				if (buckets[hashed_values[lightest_bucket]]->storage[i] == 0){
-					buckets[hashed_values[lightest_bucket]]->storage[i]=v;
-					buckets[hashed_values[lightest_bucket]]->count++;
+				if (this->table[lightest_bucket][i] == 0){
+					this->table[lightest_bucket][i]=v;
+					this->counts[lightest_bucket]++;
 					return 0;
 				}
 			}

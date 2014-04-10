@@ -1,11 +1,42 @@
 #include<stdio.h>
 
+struct Brick {
+	int x;
+	int *y;
+};
+
+class Test {
+
+	int *a;  // this is an array
+	struct Brick *b;
+public:
+
+	Test() {
+		init();
+	}
+
+	void init(){
+		this->a =new int[10];
+		this->b =new Brick[10];
+		for(int i = 1; i< 10; i++){
+			this->b[i].y=new int[5];
+		}
+	}
+
+	~Test() {
+		for(int i = 1; i< 10; i++){
+			delete[] this->b[i].y;
+		}
+		
+		delete[] this->b;
+		delete[] this->a;
+	}
+};
+
+// new comment 
 int main(int argv, char** argc){
 
-	int a = 1238728137;
-	long S = 4;
-
-
-	/* this is all we need to do to choose the bucket */
-	int bucket = (int)((a * S) >> 32);
+	Test *t = new Test();
+	delete[] t;
+	
 }
