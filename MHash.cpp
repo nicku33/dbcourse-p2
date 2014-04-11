@@ -3,7 +3,7 @@
 //Constructor
 MHash::MHash(int multiplier, int S, int B){
     s = multiplier;
-    p = log2(exp2(S)/B);
+    p = S-log2(B);
 }
 
 //Hash function
