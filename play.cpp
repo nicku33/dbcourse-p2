@@ -12,21 +12,23 @@ class Test {
 private:
 	int *a;  // this is an array
 	struct Brick *b;
+	int size;
 
 	static void log(string s){
 		cout << s <<  endl;	
 	}
 public:
 
-	Test() {
+	Test(int size) {
+		this->size = size;
 		init();
 	}
 
 	void init(){
 		cerr << "Entering init\n";
-		this->a =new int[10];
-		this->b =new Brick[10];
-		for(int i = 0; i< 10; i++){
+		this->a =new int[this->size];
+		this->b =new Brick[this->size];
+		for(int i = 0; i< size; i++){
 			cerr << "making brick" << i << "\n";
 			this->b[i].x=i;
 			this->b[i].y=new int[5];
@@ -34,6 +36,7 @@ public:
 	}
 
 	~Test() {
+		int sz=10;
 		cerr << "Entering destructor\n";
 		for(int i = 0; i< 10; i++){
 			cerr << "deleting brick " << i << "\n";

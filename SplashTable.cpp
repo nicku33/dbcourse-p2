@@ -2,147 +2,116 @@
 #include<random>
 #include<ostream>
 #include<iostream>
+#include "SplashTable.h"
+#include "Hash.h" 
 
-// maybe we should use a bucket struct instead later
-/*
-struct Bucket {
-	int count;
-	int storage[];
-};
-*/
-class Hash {
 
-	int seed;
-	int s;
-public:
-	Hash(int s, int seed) {
-		this->s = s;
-		this->seed = seed;
-	}
-	
-	// TODO: This is a garbage implementation
-	int get( int v){
-		float f = 1/seed;
-		int a = (int) v * f;
-		return a % s; 
+void SplashTable::init() {
+	// can't do this, as we cannot allocate with new dynamically
+	counts=new int[this->s];
+	hashes=new Hash*[this->h];
 
-	}
-};
-
-class SplashTable {
-	int s; // this is the (initial) number of hash buckets 
-	int b; // the number of buckets
-	int h; // number of hash functions
-	int lim; // maximum number of recursions
-
-	int counts[];
-	int table[][];
-	Hash hashes[];
-
-	void init() {
-		hashes=new 
-		for(i=1; i< this->s; i++){
-				
-		}
-		
-		/* need to allocate memory to zero */
-		// TODO: allocate our main struct, memory, etc
+	for(int i=0; i< this->h; i++){
+		hashes[i]= new Hash(this->s,i);
 	}
 
-	int getBucket(int v){
-		/* the idea here is that we multiply by our buckets and just capture the overflow as our bucket number. This is, effectively like:
-		   pick a random number 1-100
-		   divide by 100 to get fraction 0-1
-		   multiply by # of buckets
-		   round down to get bucket id
-		 */ 
-		long z =  v * s;
-		return (int)(z>>32);
+	table=new int* [this->s];
+	for(int i=0; i< this->s; i++){
+		table[i]=new int[this->b];
 	}
-
-	public:
-
-	SplashTable(int s, int b, int h, int lim) {
-		this->s = s;
-		this->b = b;
-		this->h = h;   // equiv to (*this).h;
-		this->lim=lim;
-		init();
-	}
-
-	int insert(int v){
-		return insert(v,0);	// make first attempt at insertion[	
-	}
-
-	int insert(int v, int l){
-
-		int min_filled=s;	// this is the smallest bucket 
-		int lightest_bucket=0; 
-		int hashed_values[this->h];	// let's store the computed hashes
-
-		// let's gather all the hash values
-		for (int i=0; i< h; i++){
-			hashed_values[i]=this->hashes[i].get(v);
-			if(buckets[hashed_values[i]]->count < min_filled){
-				min_filled=buckets[hashed_values[i]]->count;
-				lightest_bucket=hashed_values[i];
-			}
-		}
+}
 
 
-		if(min_filled==s){
-			// they were all full, we need to do a swap and recurse
-			// if we've hit our recursion limit, bad news
-			if (l==lim){
-				return -1;
-			}
+int SplashTable::getBucket(int v){
+	/* the idea here is that we multiply by our buckets and just capture the overflow as our bucket number. This is, effectively like:
+	   pick a random number 1-100
+	   divide by 100 to get fraction 0-1
+	   multiply by # of buckets
+	   round down to get bucket id
+	 */ 
+	long z =  v * s;
+	return (int)(z>>32);
+}
 
-			// choose a random bucket: TODO, use a better generator
-			int random_bucket=rand() % s;
-			int random_index=rand() % b;
 
-			// swap out the old value and put in the new
-			int v_swap = this->table[random_bucket][random_index];
-			table[random_bucket][random_index]=v;
-			// and recurse
-			return insert(v_swap, l++);
-		} else {
-			// we had room, do the storage
-			// we need to find the first available spot
-			
-			for(int i=0;i<s;i++){
-				if (this->table[lightest_bucket][i] == 0){
-					this->table[lightest_bucket][i]=v;
-					this->counts[lightest_bucket]++;
-					return 0;
-				}
-			}
+SplashTable::SplashTable(int s, int b, int h, int lim) {
+	this->s = s;
+	this->b = b;
+	this->h = h;   // equiv to (*this).h;
+	this->lim=lim;
+	init();
+}
 
-			// we shouldn't get here, random code
-			throw(100); 
+int SplashTable::insert(int v){
+	return insert(v,0);	// make first attempt at insertion[	
+}
+
+int SplashTable::insert(int v, int l){
+
+	int min_filled=s;	// this is the smallest bucket 
+	int lightest_bucket=0; 
+	int * hashed_values;
+	hashed_values = new int[this->h];	
+	//		int hashed_values[this->h];	// let's store the computed hashes
+
+	// let's gather all the hash values
+	for (int i=0; i< h; i++){
+		hashed_values[i]=this->hashes[i]->get(v);
+		if(counts[i] < min_filled){
+			min_filled=counts[i];
+			lightest_bucket=i;
 		}
 	}
 
-	void dump() {
 
+	if(min_filled==s){
+		// they were all full, we need to do a swap and recurse
+		// if we've hit our recursion limit, bad news
+		if (l==lim){
+			return -1;
+		}
 
-		/* format is 
-		 * B S h N * h[0] H[1] ... H[h-1] K[0] P[0] * K[1] P[1]
-		 * ...
-		 * K[2^S-1] P[2^S-1]
-		 */ 
-		std::cout << b << s << "\n";
-		for (int i=0; i<h; i++) {
-			/* TODO something about how to paramaterize hashes */
-		}	
+		// choose a random bucket: TODO, use a better generator
+		int random_bucket=rand() % s;
+		int random_index=rand() % b;
 
+		// swap out the old value and put in the new
+		int v_swap = table[random_bucket][random_index];
+		table[random_bucket][random_index]=v;
+		// and recurse
+		return insert(v_swap, l++);
+	} else {
+		// we had room, do the storage
+		// we need to find the first available spot
+
+		for(int i=0;i<s;i++){
+			if (this->table[lightest_bucket][i] == 0){
+				this->table[lightest_bucket][i]=v;
+				this->counts[lightest_bucket]++;
+				return 0;
+			}
+		}
+
+		// we shouldn't get here, random code
+		throw(100); 
 	}
+}
 
+void SplashTable::dump() {
+	/* format is 
+	 * B S h N * h[0] H[1] ... H[h-1] K[0] P[0] * K[1] P[1]
+	 * ...
+	 * K[2^S-1] P[2^S-1]
+	 */ 
+	std::cout << b << s << "\n";
+	for (int i=0; i<h; i++) {
+		/* TODO something about how to paramaterize hashes */
+	}	
 
+}
 
-	int probe( int key){
-		/* returns -1 if not present else paylod */
-		return -1;
-	}
+int SplashTable::probe( int key){
+	/* returns -1 if not present else paylod */
+	return -1;
+}
 
-};
