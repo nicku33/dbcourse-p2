@@ -1,6 +1,5 @@
 #ifndef ____MHash__
 #define ____MHash__
-
 #include <math.h>
 typedef unsigned int uint;
 
@@ -11,8 +10,9 @@ private:
     const static uint w = sizeof(int) * 8;
     
 public:
-    MHash(uint, uint, uint);
-    uint hash(uint);
+    MHash(uint multiplier, uint S, uint B);
+    uint hash(uint key);
+    uint getMultiplier();
 };
 
 #endif
