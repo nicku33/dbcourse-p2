@@ -1,57 +1,47 @@
-#include<stdlib.h>
-#include<random>
-#include<ostream>
-#include<iostream>
+#include <stdlib.h>
+#include <random>
+#include <ostream>
+#include <iostream>
+#include <Math.h>
+#include "MHash.h"
 
-struct Bucket {
-	int count;
-	int storage[];
-};
-
-class Hash {
-
-	int seed;
-	int s;
+class Bucket {
+    
 public:
-	Hash(int s, int seed) {
-		this->s = s;
-		this->seed = seed;
-	}
-	
-	// TODO: This is a garbage implementation
-
-	int get( int v){
-		float f = 1/seed;
-		int a = (int) v * f;
-		return a % s; 
-
-	}
+    int count;
+	int *keys;
+    int *payload;
+    
+    void hash(int bucket_size){
+        this->count = 0;
+        this->keys = new int[bucket_size];
+        this->payload = new int[bucket_size];
+    }
+    
+    void deleteObject(){
+        delete []keys;
+        delete []payload;
+    }
+    
 };
 
 class SplashTable {
 	int s; // this is the (initial) number of hash buckets //No, it's the 2^s number of entries in total for all buckets
-	int b; // the number of buckets //No, it should be the bucket size
+	int b; // the number of buckets //No, it is the bucket size
 	int h; // number of hash functions
 	int lim; // maximum number of recursions
+    int noOfBuckets = exp2(s)/b;
 
 	int counts[];
 	int table[][];
-	Hash hashes[];
+    Bucket buckets[noOfBuckets];
+	Hash hashes[h];
+    
+    
 
 	void init() {
 		/* need to allocate memory to zero */
 		// TODO: allocate our main struct, memory, etc
-	}
-
-	int getBucket(int v){
-		/* the idea here is that we multiply by our buckets and just capture the overflow as our bucket number. This is, effectively like:
-		   pick a random number 1-100
-		   divide by 100 to get fraction 0-1
-		   multiply by # of buckets
-		   round down to get bucket id
-		 */ 
-		long z =  v * s;
-		return (int)(z>>32);
 	}
 
 	public:
