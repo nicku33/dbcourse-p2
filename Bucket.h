@@ -1,14 +1,13 @@
-//
-//  Bucket.h
-//  
-//
-//  Created by Anders Rydbirk on 13/04/14.
-//
-//
-
 #ifndef ____Bucket__
 #define ____Bucket__
 
-#include <iostream>
+class Bucket {
+    
+public:
+    int count;
+	int *keys;
+    int *payload;
 
-#endif /* defined(____Bucket__) */
+    Bucket(int bucket_size);
+};
+#endif

@@ -10,3 +10,7 @@ MHash::MHash(uint multiplier, uint S, uint B){
 uint MHash::hash(uint key){
     return (key * s) >> (w - p);
 }
+
+uint MHash::getMultiplier(){
+    return s;
+}
