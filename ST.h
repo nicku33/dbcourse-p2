@@ -17,18 +17,16 @@ private:
     uint S, B, h, R;
     int noOfBuckets;
     std::vector<MHash> hashes;
-    std::string dumpFileName;
+    std::vector<Bucket> buckets;
     void init();
-    int build(uint key, uint payload, int lim);
+    int build(uint key, uint payload, int lim); //Internal build method
     
 public:
-    std::vector<Bucket> buckets;
-    SplashTable(int S, int B, int h, int R);
-    int build(uint key, uint payload);
-    uint probe(uint key);
-    void dump();
-    void dump(std::string fileName);
-    ~SplashTable();
+    SplashTable(int B, int R, int S, int h); //Constructor
+    int build(uint key, uint payload); //Build method
+    uint probe(uint key); //Probe method, returns payload
+    void dump(std::string fileName); //Dumps table structure
+    ~SplashTable(); //Deconstrutor method, frees allocated memory in buckets
 };
 
 #endif
