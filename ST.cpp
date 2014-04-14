@@ -70,20 +70,22 @@ int SplashTable::build(uint key, uint payload, int l){
     }
 
 uint SplashTable::probe(uint key){
-    int *hashedValues = new int[h];
+    int hashedValue;
     
     //Retrieves all hash values for the given key to probe
-    for(int i = 0; i < h; i++){
-        hashedValues[i] = hashes[i].hash(key);
-    }
-    unsigned int value = 0;
+
+    uint value = 0;
+    int count = 0;
+    
     for(int i = 0; i<h; i++){
+        hashedValue = hashes[i].hash(key);
+        
         for(int k = 0; k<B; k++){
             //If true, value = 1 * payload
-            value += (buckets[hashedValues[i]].keys[k] == key) * buckets[hashedValues[i]].payload[k];
+            count += (buckets[hashedValue].keys[k] == key);
+            value += ((count == 1) & (buckets[hashedValue].keys[k] == key)) * buckets[hashedValue].payload[k];
         }
     }
-    delete [] hashedValues;
     return value;
 }
 

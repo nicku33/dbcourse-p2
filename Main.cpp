@@ -80,7 +80,6 @@ int main(int argc, char* argv[]){
             //Prints the result to resultfile
             cout << probeKey << "" << result << "\n";
         }
-        
     }
 }
 
