@@ -52,7 +52,6 @@ int SplashTable::insert(int v, int l){
 	int lightest_bucket=0; 
 	int * hashed_values;
 	hashed_values = new int[this->h];	
-	//		int hashed_values[this->h];	// let's store the computed hashes
 
 	// let's gather all the hash values
 	for (int i=0; i< h; i++){
