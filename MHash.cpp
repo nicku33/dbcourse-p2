@@ -10,8 +10,3 @@ MHash::MHash(uint multiplier, uint S, uint B){
 uint MHash::hash(uint key){
     return (key * s) >> (w - p);
 }
-
-int main(){
-    MHash::MHash(1231232, 12312232,12322);
-    return 0;
-}
