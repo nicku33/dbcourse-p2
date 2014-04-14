@@ -27,15 +27,15 @@ int SplashTable::build(uint key, uint payload){
 }
 
 int SplashTable::build(uint key, uint payload, int l){
-    int hashedValues[h];
+    int hashedValue;
     
     int minFilled = B;
     int leastFilledBucket = 0;
     for(int i = 0; i<h; i++){
-        hashedValues[i] = hashes[i].hash(key);
-        if(buckets[hashedValues[i]].count < minFilled){
-            minFilled = buckets[hashedValues[i]].count;
-            leastFilledBucket = hashedValues[i];
+        hashedValue = hashes[i].hash(key);
+        if(buckets[hashedValue].count < minFilled){
+            minFilled = buckets[hashedValue].count;
+            leastFilledBucket = hashedValue;
         }
     }
     
@@ -70,7 +70,7 @@ int SplashTable::build(uint key, uint payload, int l){
     }
 
 uint SplashTable::probe(uint key){
-    int hashedValues[h];
+    int *hashedValues = new int[h];
     
     //Retrieves all hash values for the given key to probe
     for(int i = 0; i < h; i++){
@@ -83,6 +83,7 @@ uint SplashTable::probe(uint key){
             value += (buckets[hashedValues[i]].keys[k] == key) * buckets[hashedValues[i]].payload[k];
         }
     }
+    delete [] hashedValues;
     return value;
 }
 
@@ -118,20 +119,4 @@ SplashTable::~SplashTable(){
         delete [] buckets[i].keys;
         delete [] buckets[i].payload;
     }
-}
-
-//TODO: Remove this, connect to real main class
-int main(){
-    SplashTable test(5, 4, 3, 1);
-    test.build(2, 4);
-    test.build(3, 12);
-    test.build(24234, 3423);
-    test.build(213123, 1231);
-    test.build(123231, 23443);
-    test.build(3221, 324234);
-    test.build(321, 567567);
-    std::cout << test.probe(321) << "\n";
-    std::cout << test.probe(322) << "\n";
-    std::cout << test.probe(123231) << "\n";
-    test.dump("dumpfile.txt");
 }
