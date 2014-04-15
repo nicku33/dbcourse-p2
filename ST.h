@@ -9,17 +9,19 @@
 #include "MHash.h"
 #include "Bucket.h"
 
+//Since keys and payloads are expected to non-negative 32 bit integers
 typedef unsigned int uint;
 
 class SplashTable{
 
 private:
-    uint S, B, h, R;
-    int noOfBuckets;
-    std::vector<MHash> hashes;
-    std::vector<Bucket> buckets;
-    void init();
+    uint S, B, h, R; //Init values
+    int noOfBuckets, totalCount; //Internal values
+    std::vector<MHash> hashes; //Vector holding hash functions
+    std::vector<Bucket> buckets; //Vector holding buckets
+    void init(); //Initializes internal values, hashes and buckets
     int build(uint key, uint payload, int lim); //Internal build method
+
     
 public:
     SplashTable(int B, int R, int S, int h); //Constructor
