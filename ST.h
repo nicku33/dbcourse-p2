@@ -21,7 +21,7 @@ private:
     std::vector<Bucket> buckets; //Vector holding buckets
     void init(); //Initializes internal values, hashes and buckets
     int build(uint key, uint payload, int lim); //Internal build method
-
+    uint getRandom(uint min, uint max); //For random index
     
 public:
     SplashTable(int B, int R, int S, int h); //Constructor

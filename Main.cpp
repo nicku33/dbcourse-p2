@@ -32,7 +32,8 @@ int main(int argc, char* argv[]){
             inputFileName = argv[5];
             break;
         default:
-            cout << "Missing arguments.\n";
+            cout << "Missing arguments:\nB: Bucket size\nR: Recursions\n";
+            cout << "S: 2^S entries\nh: Hash functions\nInputfile\n";
             exit(EXIT_FAILURE);
             break;
     }
@@ -78,7 +79,7 @@ int main(int argc, char* argv[]){
         //Not printed if 0.
         if(result){
             //Prints the result to resultfile
-            cout << probeKey << "" << result << "\n";
+            cout << probeKey << " " << result << "\n";
         }
     }
 }

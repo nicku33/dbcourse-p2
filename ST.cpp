@@ -1,5 +1,9 @@
 #include "ST.h"
 
+/**
+ * Constructor
+ * initializes relevant parameters.
+ */
 SplashTable::SplashTable(int B, int R, int S, int h){
     this->B = B; //Bucket size
     this->R = R; //Recursive limit
@@ -8,6 +12,9 @@ SplashTable::SplashTable(int B, int R, int S, int h){
     init();
 }
 
+/**
+ * Initializes some core values, hash functions and buckets.
+ */
 void SplashTable::init(){
     noOfBuckets = exp2(S)/B; //Since B is a power of 2
     totalCount = 0;
@@ -70,17 +77,9 @@ int SplashTable::build(uint key, uint payload, int l){
             return 0;
         }
         
-        //Initilizes random number generator
-        std::random_device rd;
-        std::mt19937 engine(rd());
-        
-        //Initialize distributions
-        std::uniform_int_distribution<> uni_bucket(0,noOfBuckets-1); //For random bucket
-        std::uniform_int_distribution<> uni_index(0,B-1); //For random index
-
         // choose a random bucket
-        int randomBucket = uni_bucket(engine);
-        int randomIndex = uni_index(engine);
+        int randomBucket = hashes[getRandom(0, h-1)].hash(key);
+        int randomIndex = getRandom(0,B-1);
         
         // swap out the old value and put in the new
         int tempKey = buckets[randomBucket].keys[randomIndex];
@@ -89,7 +88,7 @@ int SplashTable::build(uint key, uint payload, int l){
         buckets[randomBucket].payload[randomIndex] = payload;
         
         //Recursive call, increment l
-        return build(tempKey, tempPayload, l++);
+        return build(tempKey, tempPayload, ++l);
     } else {
         // we had room, do the storage
         Bucket *bucket = &buckets[leastFilledBucket];
@@ -150,7 +149,7 @@ void SplashTable::dump(std::string fileName){
     
     //Writing all key-value pairs
     for(int i = 0; i<noOfBuckets; i++){
-        for(int k = 0; k<buckets[i].count; k++){
+        for(int k = 0; k<B; k++){
             dumpfile << buckets[i].keys[k] << " " << buckets[i].payload[k] << "\n";
         }
     }
@@ -158,7 +157,26 @@ void SplashTable::dump(std::string fileName){
     dumpfile.close();
 }
 
-//Deconstrutor, frees the memory allocated to the bucket arrays
+/**
+ * Used for generating random number in a uniform distribution.
+ * External to prevent stack overflow when the recursive limit is > 254
+ */
+uint SplashTable::getRandom(uint min, uint max){
+    //Initialize random device and random engine
+    std::random_device rd;
+    std::mt19937 engine(rd());
+    
+    //Initialize uniform distribution
+    std::uniform_int_distribution<> uniform(min,max);
+    
+    //Return a number from the distribution
+    return uniform(engine);
+}
+
+/**
+ * Destructor
+ * Frees the memory allocated to the bucket arrays.
+ */
 SplashTable::~SplashTable(){
     for(int i = 0; i<noOfBuckets; i++){
         delete [] buckets[i].keys;
