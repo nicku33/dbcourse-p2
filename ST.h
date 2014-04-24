@@ -25,7 +25,7 @@ private:
     
 public:
     SplashTable(int B, int R, int S, int h); //Constructor
-    int build(uint *keys, uint *payloads); //Build method
+    int build(uint *keys, uint *payloads, int length); //Build method
     uint probe(uint key); //Probe method, returns payload
     void dump(std::string fileName); //Dumps table structure
     uint getCount(); //For test purposes

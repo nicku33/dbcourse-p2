@@ -5,7 +5,7 @@
 #include <stdlib.h> //exit, EXIT_FAILURE
 #include <Math.h>
 #include <random>
-#include "ST.h"
+#include "GenST.h"
 
 using namespace std;
 typedef unsigned int uint;
@@ -33,6 +33,10 @@ void testTable(uint B, uint R, uint S, uint h){
     uint *keys = new uint[lim];
     uint *payloads = new uint[lim];
     
+    ofstream probeFile;
+    probeFile.open("probe.txt");
+    int notFirst = 0;
+    
     for(uint i = 0; i < lim; i++){
         
         do{
@@ -43,12 +47,20 @@ void testTable(uint B, uint R, uint S, uint h){
         
         if(sTable.insert(keys[i], payloads[i], 0, -1)){
             cout << keys[i] << " " << payloads[i] << "\n";
+            if(getRandom(0,1)){
+                if(notFirst){
+                    probeFile << "\n";
+                }
+                probeFile << keys[i];
+                notFirst = 1;
+            }
         } else {
             break;
         }
         
         
     }
+    probeFile.close();
     sTable.dump("dump.txt");
     
     delete [] keys;

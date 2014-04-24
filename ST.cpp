@@ -42,9 +42,8 @@ void SplashTable::init(){
  * uint key: A non-negative key
  * uint payload: A non-negative payload
  */
-int SplashTable::build(uint * keys, uint * payloads){
-    int entries = exp2(S);
-    for(int i = 0; i < entries; i++){
+int SplashTable::build(uint * keys, uint * payloads, int length){
+    for(int i = 0; i < length; i++){
         if(!insert(keys[i], payloads[i], 0, -1)){
             return 0;
         }
