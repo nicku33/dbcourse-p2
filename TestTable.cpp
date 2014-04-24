@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <iostream>
 #include <sstream>
 #include <fstream>  //For reading inputfile
@@ -22,9 +21,13 @@ uint getRandom(uint min, uint max){
     return uniform(engine);
 }
 
+/**
+ * Function for SplashTable test, called 'round' times.
+ *
+ */
 int testTable(uint B, uint R, uint S, uint h, int round){
     SplashTable sTable(B, R, S, h);
-    uint lim = exp2(S);
+    uint lim = exp2(S); //Tries to fill up the table
     
     //Key limit
     uint keyLim = exp2(32)-1;
@@ -39,16 +42,20 @@ int testTable(uint B, uint R, uint S, uint h, int round){
 //        cout << i << ": " << keys[i] << " " << payloads[i] << "\n";
     }
     
-    sTable.build(keys, payloads);
+    //Parses the arrays and array length to the sTable
+    sTable.build(keys, payloads, lim);
     
-    ///* If dumpfile is needed
+    /* If dumpfile is needed
     stringstream dumpFileName;
     dumpFileName << "dump" << round << ".txt";
     sTable.dump(dumpFileName.str());
-    //*/
+    */
+    
+    //Frees memory
     delete [] keys;
     delete [] payloads;
     
+    //Returns number of inserted values
     return sTable.getCount();
     
 }
@@ -58,7 +65,7 @@ int main(int argc, char* argv[]){
 
     //Initialize arguments
     switch (argc) {
-        case 6: //No dumpfile
+        case 6:
             B = stoi(argv[1]);
             R = stoi(argv[2]);
             S = stoi(argv[3]);
@@ -72,11 +79,15 @@ int main(int argc, char* argv[]){
             break;
     }
     
+    //Generate random input and build the table 'round' times
     int counts[rounds];
     for(int i = 0; i<rounds; i++){
         counts[i] = testTable(B, R, S, h, i);
+        //Print for tracking the progress
         cout << "Round: " << i << "\t\tCount: " << counts[i] << "\n";
     }
+    
+    //Computing an average and LF percentage
     cout << "\n";
     int sum = 0;
     for(int i = 0; i < rounds; i++){
