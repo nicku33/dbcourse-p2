@@ -4,9 +4,6 @@ default:
 run:
 	./splash
 
-tsimd:
-	gcc -g -msse3 -o simd simdst.c
+probe:
+	gcc -g -msse3 -o probe simd_probe.c
 
-play:
-	gcc -g -msse3 -o test simdtest.c
-	./test
