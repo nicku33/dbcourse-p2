@@ -22,7 +22,7 @@ uint getRandom(uint min, uint max){
     return uniform(engine);
 }
 
-int testTable(uint B, uint R, uint S, uint h, int round){
+void testTable(uint B, uint R, uint S, uint h){
     SplashTable sTable(B, R, S, h);
     uint lim = exp2(S);
     
@@ -34,59 +34,45 @@ int testTable(uint B, uint R, uint S, uint h, int round){
     uint *payloads = new uint[lim];
     
     for(uint i = 0; i < lim; i++){
-        keys[i] = getRandom(1,keyLim-1);
+        
+        do{
+            keys[i] = getRandom(1,keyLim-1);
+        } while(sTable.probe(keys[i]));
+        
         payloads[i] = getRandom(1,keyLim-1);
-//        cout << i << ": " << keys[i] << " " << payloads[i] << "\n";
+        
+        if(sTable.insert(keys[i], payloads[i], 0, -1)){
+            cout << keys[i] << " " << payloads[i] << "\n";
+        } else {
+            break;
+        }
+        
+        
     }
+    sTable.dump("dump.txt");
     
-    sTable.build(keys, payloads);
-    
-    ///* If dumpfile is needed
-    stringstream dumpFileName;
-    dumpFileName << "dump" << round << ".txt";
-    sTable.dump(dumpFileName.str());
-    //*/
     delete [] keys;
     delete [] payloads;
-    
-    return sTable.getCount();
-    
 }
 
 int main(int argc, char* argv[]){
-    uint B, R, S, h, rounds;
-
+    uint B, R, S, h;
+    
     //Initialize arguments
     switch (argc) {
-        case 6: //No dumpfile
+        case 5: //No dumpfile
             B = stoi(argv[1]);
             R = stoi(argv[2]);
             S = stoi(argv[3]);
             h = stoi(argv[4]);
-            rounds = stoi(argv[5]);
             break;
         default:
             cout << "Missing arguments:\nB: Bucket size\nR: Recursions\n";
-            cout << "S: 2^S entries\nh: Hash functions\nrounds: Number of tests\n";
+            cout << "S: 2^S entries\nh: Hash functions\n";
             exit(EXIT_FAILURE);
             break;
     }
-    
-    int counts[rounds];
-    for(int i = 0; i<rounds; i++){
-        counts[i] = testTable(B, R, S, h, i);
-        cout << "Round: " << i << "\t\tCount: " << counts[i] << "\n";
-    }
-    cout << "\n";
-    int sum = 0;
-    for(int i = 0; i < rounds; i++){
-        sum += counts[i];
-    }
-    double avg = (double) sum / rounds;
-    cout << "Avg:\t" << avg << "\n";
-    
-    double percentage = avg / exp2(S);
-    cout << "In %:\t" << percentage << "\n";
+    testTable(B, R, S, h);
 }
 
 

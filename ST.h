@@ -28,7 +28,7 @@ public:
     int build(uint *keys, uint *payloads); //Build method
     uint probe(uint key); //Probe method, returns payload
     void dump(std::string fileName); //Dumps table structure
-    uint getCount();
+    uint getCount(); //For test purposes
     ~SplashTable(); //Deconstrutor method, frees allocated memory in buckets
 };
 
