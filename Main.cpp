@@ -1,12 +1,11 @@
-#include <stdio.h>
-#include <iostream>
 #include <fstream>  //For reading inputfile
+#include <iostream> //For writing output
 #include <string>   //For reading inputfile
 #include <sstream>  //For splitting inputfile line
 #include <vector>   //For splitting inputfile line
 #include <exception>//invalid_argument exception
 #include <stdlib.h> //exit, EXIT_FAILURE
-#include "ST.h"
+#include "ST.h" //splashTable
 
 using namespace std;
 typedef unsigned int uint;

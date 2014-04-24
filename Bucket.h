@@ -1,7 +1,5 @@
 #ifndef ____Bucket__
 #define ____Bucket__
-#include <iostream>
-
 typedef unsigned int uint;
 class Bucket {
     
