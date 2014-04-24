@@ -20,14 +20,15 @@ private:
     std::vector<MHash> hashes; //Vector holding hash functions
     std::vector<Bucket> buckets; //Vector holding buckets
     void init(); //Initializes internal values, hashes and buckets
-    int build(uint key, uint payload, int lim); //Internal build method
+    int insert(uint key, uint payload, int lim, int lastBucket); //Internal build method
     uint getRandom(uint min, uint max); //For random index
     
 public:
     SplashTable(int B, int R, int S, int h); //Constructor
-    int build(uint key, uint payload); //Build method
+    int build(uint *keys, uint *payloads); //Build method
     uint probe(uint key); //Probe method, returns payload
     void dump(std::string fileName); //Dumps table structure
+    uint getCount();
     ~SplashTable(); //Deconstrutor method, frees allocated memory in buckets
 };
 

@@ -1,13 +1,19 @@
 #ifndef ____Bucket__
 #define ____Bucket__
+#include <iostream>
 
+typedef unsigned int uint;
 class Bucket {
     
 public:
     int count; //Number of keys in bucket
-	int *keys; //Pointer for key array
-    int *payload; //pointer for payload array
+    int index;
+    int bucket_size;
+	uint *keys; //Pointer for key array
+    uint *payload; //pointer for payload array
 
     Bucket(int bucket_size); //Constructer
+    int getIndexOfOldest();
+    void insert(uint key, uint payload);
 };
 #endif
