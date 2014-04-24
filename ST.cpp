@@ -17,7 +17,7 @@ SplashTable::SplashTable(int B, int R, int S, int h){
  */
 void SplashTable::init(){
     noOfBuckets = exp2(S)/B; //Since B is a power of 2
-    totalCount = 0;
+    totalCount = 0; //For dump file
     
     //Initializes buckets with bucketsize B
     for(int i = 0; i<noOfBuckets; i++){
@@ -39,37 +39,43 @@ void SplashTable::init(){
 }
 /**
  * Public build method, initializes first attempt at insertion
- * uint key: A non-negative key
- * uint payload: A non-negative payload
+ * uint *keys: An array of all non-negative keys
+ * uint *payloads: An array of all non-negative payloads
  */
 int SplashTable::build(uint * keys, uint * payloads, int length){
+    //Insert every key-payload pair in table
     for(int i = 0; i < length; i++){
+        //lastBucket = -1 will not generate any hits
         if(!insert(keys[i], payloads[i], 0, -1)){
+            //If it fails, return false
             return 0;
         }
     }
+    //Every key inserted into table
     return 1;
 }
 
 
 /**
- * Private build method, returns 1 if success, 0 othervise
+ * Private insert method, returns 1 if success, 0 otherwise
  * uint key: A non-negative key
  * uint payload: A non-negative payload
- * int l: Attempted insertions, has to below R
+ * int l: Attempted insertions, has to be below R
+ * int lastBucket: In case a key is re-inserted into H-lastBucket buckets
  */
 int SplashTable::insert(uint key, uint payload, int l, int lastBucket){
     int hashedValue;
     
     int minFilled = B; //Count of least filled bucket
     int leastFilledBucket = 0; //Index of least filled bucket
-    int hitLastBucket = 0;
+    int hitLastBucket = 0; //For hash collisions
     
     //Loops through all hash functions
     for(int i = 0; i<h; i++){
         hashedValue = hashes[i].hash(key); //Hashes key
         
         if(hashedValue == lastBucket){
+            //Do not attempt to insert into old bucket
             hitLastBucket++;
             continue;
         }
@@ -113,7 +119,7 @@ int SplashTable::insert(uint key, uint payload, int l, int lastBucket){
         Bucket *bucket = &buckets[leastFilledBucket];
         bucket->insert(key, payload);
         totalCount++; //increments table count
-        return 1;
+        return 1; //Success
     }
 }
 

@@ -1,11 +1,9 @@
 #ifndef ____ST__
 #define ____ST__
-#include <string>
-#include <vector>
-#include <Math.h>
-#include <random>
-#include <fstream>
-#include <iostream>
+#include <vector> //Holding buckets
+#include <Math.h> //exp2(S)
+#include <random> //For random bucket
+#include <fstream> //For dump method
 #include "MHash.h"
 #include "Bucket.h"
 

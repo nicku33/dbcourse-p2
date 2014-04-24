@@ -1,19 +1,20 @@
-#include <stdio.h>
-#include <iostream>
 #include <fstream>  //For reading inputfile
+#include <iostream> //For writing output
 #include <string>   //For reading inputfile
 #include <sstream>  //For splitting inputfile line
 #include <vector>   //For splitting inputfile line
 #include <exception>//invalid_argument exception
 #include <stdlib.h> //exit, EXIT_FAILURE
-#include "ST.h"
+#include "ST.h" //splashTable
 
 using namespace std;
 typedef unsigned int uint;
 
+//Define function
 vector<string> &split(const string &s, char delim, vector<string> &elems);
 
 int main(int argc, char* argv[]){
+    //Argument variables
     string dumpFileName, inputFileName;
     int B, R, S, h, printDumpFile;
     
@@ -21,7 +22,7 @@ int main(int argc, char* argv[]){
     switch (argc) {
         case 7: //dumpfile
             dumpFileName = argv[6];
-            printDumpFile = 1;
+            printDumpFile = 1; //In case the dumpFile is present
             
             //No break: Letting case 7 continue into case 6
             
@@ -38,11 +39,14 @@ int main(int argc, char* argv[]){
             exit(EXIT_FAILURE);
             break;
     }
+    //Arrays holding the keys
     uint *keys;
     uint *payloads;
     
+    //Open file
     ifstream inputfile(inputFileName);
     if(inputfile.is_open()){
+        //Creates an object of SplashTable
         SplashTable sTable(B, R, S, h);
         
         try {
@@ -50,6 +54,8 @@ int main(int argc, char* argv[]){
             //Calculates length of input file
             uint length = 0;
             string line;
+            
+            //Iterates over file to compute length
             while(getline(inputfile, line)){
                 length++;
             }
@@ -65,8 +71,13 @@ int main(int argc, char* argv[]){
             //Loops through file
             vector<string> input;
             for(uint i = 0; i < length; i++){
+                //Read line, split on ' '
                 getline(inputfile, line);
                 split(line, ' ', input);
+                
+                //Insert keys into array.
+                //std::stoul since std::stoi cannot handle
+                //the size of unsigned ints.
                 keys[i] = (uint) stoul(input[0]);
                 payloads[i] = (uint) stoul(input[1]);
             }
@@ -89,16 +100,19 @@ int main(int argc, char* argv[]){
             
         } catch (invalid_argument& e) {
             //Failed to parse string to int
+            //Frees allocated memory
             delete[] keys;
             delete[] payloads;
             cout << "An error occured reading the inputfile.\n";
             exit(EXIT_FAILURE);
             
         }
+        //Free allocated memory
         delete[] keys;
         delete[] payloads;
         
         uint probeKey;
+        //Read probe file
         while (cin >> probeKey) {
             
             //Probe the key
