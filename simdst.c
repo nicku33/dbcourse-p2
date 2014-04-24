@@ -13,8 +13,10 @@
 unsigned int*  __attribute__ ((aligned (16))) keys;
 unsigned int*  __attribute__ ((aligned (16))) pay;
 
-int B=4;  // number of entries per bucket
-int S=5;  // 2^S = max number of entries
+int B;  // number of entries per bucket
+int S;  // 2^S = max number of entries
+int h; // number of hashes;
+int N; // number of filled data points
 int Nm; // number of entries, for conventience
 int Nb;  // number of buckets
 int p;
@@ -77,10 +79,10 @@ void pv(__m128i to, char * s){
 void dump_table(char* s){
     int i,j;
     printf("\n%s\n", s);
-    for(i=0; i<S; i++){
+    for(i=0; i<Nb; i++){
         printf("%3d:\t",i);
         for(j=0; j<B; j++){
-            printf(" %3d:%3d", keys[i*B + j], pay[i*B + j]); 
+            printf(" %3u:%3u", keys[i*B + j], pay[i*B + j]); 
         }
         printf("\n");
     }
@@ -130,28 +132,40 @@ unsigned int probe(unsigned int key){
 //    p = S-log2(B);
 
 int main(int argc, char* argv[]){
-    if(!strcmp(argv[1], "test")){
-        unsigned int h0=0xf918720c;
-        unsigned int h1=0x8f7201cc;
-        hashes[0]=h0;
-        hashes[1]=h1;
-        initialize_buckets();
-       
-        // let's insert some values, then probe
-        int bucket,i;
-        for(i=0;i<40;i++){
-            int v1=i;
-            bucket=hash(v1, h0);
-            int offset=(bucket * B) + (i % 4);
-            printf("i: %d, bucket %d, off: %d\n", i, bucket, offset);
-            keys[(bucket * B) + (i % 4)]=v1;
-            pay[(bucket * B) + (i % 4)]=v1 * 10;
-        }
-        dump_table("init");       
-        for(i=1;i<40;i++){
-            unsigned int out = probe(i);
-            printf("%d:%d\t", i,out);
-        }
+
+   // make sure they included the 
+   if(argc<2){
+        printf("The first parameter should be the dumpfile.");
+        exit(0);
+   }
+
+    FILE *f;
+    f=fopen(argv[1], "r");
+    // read the params:
+    fscanf(f, "%d %d %d %d", &B, &S, &h, &N);
+    // we can assume that there are only 2 hash functions
+    fscanf(f, "%u %u", &hashes[0], &hashes[1]);
+
+    // nof we can loop over the data 
+  
+    initialize_buckets();
+    int LIMIT = 1 << S;
+    int i;
+    unsigned int k,v;
+    for(i=0; i< LIMIT; i++){
+        fscanf(f,"%u %d", &k, &v);
+        keys[i]=k;
+        pay[i]=v;
     }
+    fclose(f);
+
+    // now let's probe from stdin;
+
+    unsigned int key, res;
+    while(scanf("%u", &key)==1) {
+        res=probe(key);
+        printf("%u\n", res);
+    }
+
     return 0;
 }
