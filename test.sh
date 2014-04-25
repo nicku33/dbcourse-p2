@@ -3,12 +3,17 @@
 
 # first let's compile what we need
 
-make genfile || exit $?
+rm test_*.txt
+make genapp || exit $?
 make splashapp || exit $?
-make probeapp || exit $?
+make probeapp-mac || exit $?
 
-./gen 4 9 15 2 test_probe.txt test_input.txt || exit $?
-./splash 4 9 15 2 test_input.txt test_dump.txt < test_probe.txt > test_result.txt || exit $?
+
+./gen 4 1000 15 2 test_probe.txt test_input.txt || exit $?
+echo "test files generated"
+./splash 4 1000 15 2 test_input.txt test_dump.txt < test_probe.txt > test_result.txt 
+echo "tested with splash app"
 ./probe test_dump.txt < test_probe.txt > test_result_simd.txt || exit $?
+echo "tested with simd"
 
-diff test_result.txt test_result_simd.txt  || exit $?
+diff -q test_result.txt test_result_simd.txt  || exit $?

@@ -24,7 +24,7 @@ uint getRandom(uint min, uint max){
 
 void testTable(uint B, uint R, uint S, uint h, string probename, string inputname){
     SplashTable sTable(B, R, S, h);
-    uint lim = exp2(S);
+    uint lim = exp2(S-1);
     
     //Key limit
     uint keyLim = exp2(32)-1;
@@ -33,7 +33,7 @@ void testTable(uint B, uint R, uint S, uint h, string probename, string inputnam
     uint *keys = new uint[lim];
     uint *payloads = new uint[lim];
     
-    ofstream probeFile;
+    ofstream probeFile, inputFile;
     probeFile.open(probename);
     inputFile.open(inputname);
     int notFirst = 0;
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]){
     string inputfile;
     //Initialize arguments
     switch (argc) {
-        case 5: //No dumpfile
+        case 7: //No dumpfile
             B = stoi(argv[1]);
             R = stoi(argv[2]);
             S = stoi(argv[3]);
@@ -83,6 +83,7 @@ int main(int argc, char* argv[]){
         default:
             cout << "Missing arguments:\nB: Bucket size\nR: Recursions\n";
             cout << "S: 2^S entries\nh: Hash functions\n";
+            cout << "probefileout inputfileout\n";
             exit(EXIT_FAILURE);
             break;
     }
