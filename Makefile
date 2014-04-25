@@ -1,6 +1,9 @@
 splashapp:
 	g++ -std=c++0x -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp /usr/lib/x86_64-linux-gnu/libm.a
 
+splashapp-mac:
+	g++ -std=c++0x -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp
+
 clean:
 	rm probe splash *.o
 	rm -rf *.dSYM
