@@ -12,6 +12,6 @@ probeapp:
 	gcc -msse3 -o probe simd_probe.c /usr/lib/x86_64-linux-gnu/libm.a
 
 probeapp-mac:
-	gcc -g -msse3 -o probe simd_probe.c
+	gcc -g -msse4.1 -o probe simd_probe.c
 
 
