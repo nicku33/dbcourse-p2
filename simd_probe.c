@@ -43,10 +43,6 @@ void initialize_buckets(){
     hm=_mm_set_epi32(0, hashes[1], 0, hashes[0]);
 }
 
-unsigned int hash(unsigned int key, unsigned int h){
-      return(key * h) >> (w - p);
-}
-
 /*
  *
  * B S h N
@@ -89,7 +85,7 @@ unsigned int probe(unsigned int key){
 
     unsigned int a1=hsa[1]; // the bucket number for first hash
     unsigned int a2=hsa[3]; // the bucket number for second hash
-     
+    
     a1 = a1 << 2;  // multiply by 4
     a2 = a2 << 2;
 
