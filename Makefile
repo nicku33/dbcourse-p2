@@ -1,4 +1,4 @@
-default:
+splashapp:
 	g++ -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp
 
 clean:
@@ -6,10 +6,10 @@ clean:
 	rm -rf *.dSYM
 
 # this one is for the CLIC lab
-probe:
+probeapp:
 	gcc -msse3 -o probe simdst.c /usr/lib/x86_64-linux-gnu/libm.a
 
-probe-mac:
+probeapp-mac:
 	gcc -g -msse3 -o probe simd_probe.c
 
 
