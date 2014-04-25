@@ -23,6 +23,11 @@ int hashes[2] ;
 __m128i t; // number of tables
 __m128i hm; 
 
+void cleanup(){
+    free(keys);
+    free(pay);
+}
+
 void initialize_buckets(){
     p=S - log2(B);
     Nm=(1 << S);  // equiv to power^2
@@ -148,7 +153,6 @@ int main(int argc, char* argv[]){
         }
     }
 
-    // TODO: need to free 
-    //
+    cleanup();
     return 0;
 }
