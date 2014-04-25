@@ -1,5 +1,5 @@
 splashapp:
-	g++ -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp
+	g++ -std=c++0x -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp /usr/lib/x86_64-linux-gnu/libm.a
 
 clean:
 	rm probe splash *.o
@@ -7,7 +7,7 @@ clean:
 
 # this one is for the CLIC lab
 probeapp:
-	gcc -msse3 -o probe simdst.c /usr/lib/x86_64-linux-gnu/libm.a
+	gcc -msse3 -o probe simd_probe.c /usr/lib/x86_64-linux-gnu/libm.a
 
 probeapp-mac:
 	gcc -g -msse3 -o probe simd_probe.c

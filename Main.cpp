@@ -3,7 +3,7 @@
 #include <string>   //For reading inputfile
 #include <sstream>  //For splitting inputfile line
 #include <vector>   //For splitting inputfile line
-#include <exception>//invalid_argument exception
+#include <stdexcept>//invalid_argument exception
 #include <stdlib.h> //exit, EXIT_FAILURE
 #include "ST.h" //splashTable
 
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]){
                 sTable.dump(dumpFileName);
             }
             
-        } catch (invalid_argument& e) {
+        } catch (const std::invalid_argument& e) {
             //Failed to parse string to int
             //Frees allocated memory
             delete[] keys;
