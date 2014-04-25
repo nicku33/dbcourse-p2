@@ -1,5 +1,7 @@
 splashapp:
 	g++ -std=c++0x -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp
+genapp:
+	g++ -std=c++0x -o gen GenerateFile.cpp ST.cpp Bucket.cpp MHash.cpp
 
 clean:
 	rm probe splash *.o
