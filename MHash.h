@@ -1,7 +1,6 @@
 #ifndef ____MHash__
 #define ____MHash__
 #include <math.h>
-//Needed for 32 bit values
 typedef unsigned int uint;
 
 class MHash{
@@ -13,9 +12,9 @@ private:
     const static uint w = sizeof(int) * 8;
     
 public:
-    MHash(uint multiplier, uint S, uint B);
-    uint hash(uint key);
-    uint getMultiplier();
+    MHash(uint multiplier, uint S, uint B); //Constructor
+    uint hash(uint key); //Hash method
+    uint getMultiplier(); //Used in dump()
 };
 
 #endif

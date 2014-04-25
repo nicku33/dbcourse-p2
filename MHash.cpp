@@ -23,7 +23,9 @@ uint MHash::hash(uint key){
     return (key * s) >> (w - p);
 }
 
-//Used for dump method
+/**
+ * Used for dump method.
+ */
 uint MHash::getMultiplier(){
     return s;
 }

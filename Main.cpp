@@ -1,26 +1,28 @@
-#include <stdio.h>
-#include <iostream>
 #include <fstream>  //For reading inputfile
+#include <iostream> //For writing output
 #include <string>   //For reading inputfile
 #include <sstream>  //For splitting inputfile line
 #include <vector>   //For splitting inputfile line
 #include <exception>//invalid_argument exception
 #include <stdlib.h> //exit, EXIT_FAILURE
-#include "ST.h"
+#include "ST.h" //splashTable
 
 using namespace std;
+typedef unsigned int uint;
 
+//Define function
 vector<string> &split(const string &s, char delim, vector<string> &elems);
-    
+
 int main(int argc, char* argv[]){
+    //Argument variables
     string dumpFileName, inputFileName;
     int B, R, S, h, printDumpFile;
-
+    
     //Initialize arguments
     switch (argc) {
         case 7: //dumpfile
             dumpFileName = argv[6];
-            printDumpFile = 1;
+            printDumpFile = 1; //In case the dumpFile is present
             
             //No break: Letting case 7 continue into case 6
             
@@ -37,50 +39,94 @@ int main(int argc, char* argv[]){
             exit(EXIT_FAILURE);
             break;
     }
-    SplashTable sTable(B, R, S, h);
+    //Arrays holding the keys
+    uint *keys;
+    uint *payloads;
     
-    //Reads the inputfile and parses it to sTable
-    
+    //Open file
     ifstream inputfile(inputFileName);
-    try {
-        if(inputfile.is_open()){
+    if(inputfile.is_open()){
+        //Creates an object of SplashTable
+        SplashTable sTable(B, R, S, h);
+        
+        try {
+            
+            //Calculates length of input file
+            uint length = 0;
             string line;
-            vector<string> input;
+            
+            //Iterates over file to compute length
             while(getline(inputfile, line)){
+                length++;
+            }
+            
+            //Initializes arrays
+            keys = new uint[length];
+            payloads = new uint[length];
+            
+            //Clear EOF flag and goes back to beginning of file
+            inputfile.clear();
+            inputfile.seekg(0, ios::beg);
+            
+            //Loops through file
+            vector<string> input;
+            for(uint i = 0; i < length; i++){
+                //Read line, split on ' '
+                getline(inputfile, line);
                 split(line, ' ', input);
                 
-                //Calls build method for each line
-                if(!sTable.build(stoi(input[0]), stoi(input[1]))){ //It failed to insert
-                    if(printDumpFile){
-                        sTable.dump(dumpFileName);
-                    }
-                    exit(EXIT_FAILURE);
+                //Insert keys into array.
+                //std::stoul since std::stoi cannot handle
+                //the size of unsigned ints.
+                keys[i] = (uint) stoul(input[0]);
+                payloads[i] = (uint) stoul(input[1]);
+            }
+            
+            if(!sTable.build(keys, payloads, length)){
+                //Failed to build table
+                //Print dumpfile if argument is present
+                if(printDumpFile){
+                    sTable.dump(dumpFileName);
                 }
+                cout << "Failed to insert all keys.\n";
+                delete [] keys;
+                delete [] payloads;
+                exit(EXIT_FAILURE);
+            }
+            
+            if(printDumpFile){
+                sTable.dump(dumpFileName);
+            }
+            
+        } catch (invalid_argument& e) {
+            //Failed to parse string to int
+            //Frees allocated memory
+            delete[] keys;
+            delete[] payloads;
+            cout << "An error occured reading the inputfile.\n";
+            exit(EXIT_FAILURE);
+            
+        }
+        //Free allocated memory
+        delete[] keys;
+        delete[] payloads;
+        
+        uint probeKey;
+        //Read probe file
+        while (cin >> probeKey) {
+            
+            //Probe the key
+            uint result = sTable.probe(probeKey);
+            
+            //Not printed if 0.
+            if(result){
+                //Prints the result to resultfile
+                cout << probeKey << " " << result << "\n";
             }
         }
-        
-        if(printDumpFile){
-            sTable.dump(dumpFileName);
-        }
-        
-    } catch (invalid_argument& e) {
-        //Failed to parse string to int
-        cout << "An error occured reading the inputfile.\n";
+    } else {
+        cout << "An error occured opening the inputfile.\n";
         exit(EXIT_FAILURE);
-    }
-
-    //Probe table with overwritten system in/out
-    int probeKey;
-    while (cin >> probeKey) {
-        
-        //Probe the key
-        int result = sTable.probe(probeKey);
-        
-        //Not printed if 0.
-        if(result){
-            //Prints the result to resultfile
-            cout << probeKey << " " << result << "\n";
-        }
     }
 }
 

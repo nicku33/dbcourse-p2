@@ -1,6 +1,5 @@
 default:
-	gcc -o splash Main.cpp
-
+	g++ -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp
 run:
 	./splash
 
@@ -14,3 +13,8 @@ simdtest:
 
 simd:
 	gcc -g -msse4 -o trysimd simdst.c
+probe:
+	gcc -msse3 -o simd simdst.c /usr/lib/x86_64-linux-gnu/libm.a
+
+probe-mac:
+	gcc -g -msse3 -o probe simd_probe.c

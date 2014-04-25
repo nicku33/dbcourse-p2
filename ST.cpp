@@ -17,7 +17,7 @@ SplashTable::SplashTable(int B, int R, int S, int h){
  */
 void SplashTable::init(){
     noOfBuckets = exp2(S)/B; //Since B is a power of 2
-    totalCount = 0;
+    totalCount = 0; //For dump file
     
     //Initializes buckets with bucketsize B
     for(int i = 0; i<noOfBuckets; i++){
@@ -39,30 +39,46 @@ void SplashTable::init(){
 }
 /**
  * Public build method, initializes first attempt at insertion
- * uint key: A non-negative key
- * uint payload: A non-negative payload
+ * uint *keys: An array of all non-negative keys
+ * uint *payloads: An array of all non-negative payloads
  */
-int SplashTable::build(uint key, uint payload){
-    return build(key, payload, 0); //First attempt
+int SplashTable::build(uint * keys, uint * payloads, int length){
+    //Insert every key-payload pair in table
+    for(int i = 0; i < length; i++){
+        //lastBucket = -1 will not generate any hits
+        if(!insert(keys[i], payloads[i], 0, -1)){
+            //If it fails, return false
+            return 0;
+        }
+    }
+    //Every key inserted into table
+    return 1;
 }
 
 
 /**
- * Private build method, returns 1 if success, 0 othervise
+ * Private insert method, returns 1 if success, 0 otherwise
  * uint key: A non-negative key
  * uint payload: A non-negative payload
- * int l: Attempted insertions, has to below R
+ * int l: Attempted insertions, has to be below R
+ * int lastBucket: In case a key is re-inserted into H-lastBucket buckets
  */
-int SplashTable::build(uint key, uint payload, int l){
+int SplashTable::insert(uint key, uint payload, int l, int lastBucket){
     int hashedValue;
     
     int minFilled = B; //Count of least filled bucket
     int leastFilledBucket = 0; //Index of least filled bucket
+    int hitLastBucket = 0; //For hash collisions
     
     //Loops through all hash functions
     for(int i = 0; i<h; i++){
         hashedValue = hashes[i].hash(key); //Hashes key
         
+        if(hashedValue == lastBucket){
+            //Do not attempt to insert into old bucket
+            hitLastBucket++;
+            continue;
+        }
         //Tests if minFilled is bigger than current bucket count
         if(buckets[hashedValue].count < minFilled){
             minFilled = buckets[hashedValue].count;
@@ -78,25 +94,32 @@ int SplashTable::build(uint key, uint payload, int l){
         }
         
         // choose a random bucket
-        int randomBucket = hashes[getRandom(0, h-1)].hash(key);
-        int randomIndex = getRandom(0,B-1);
+        int randomBucket;
+        do{
+            //Assigns a random bucket from the possible hash functions
+            //Run only once if all hash functions hash to the same bucket
+            //OR if found bucket is not the same as last attempt
+            randomBucket = hashes[getRandom(0, h-1)].hash(key);
+        } while (randomBucket == lastBucket & hitLastBucket != h);
+        
+        //Retrieves index of oldest bucket
+        int index = buckets[randomBucket].getIndexOfOldest();
         
         // swap out the old value and put in the new
-        int tempKey = buckets[randomBucket].keys[randomIndex];
-        int tempPayload = buckets[randomBucket].payload[randomIndex];
-        buckets[randomBucket].keys[randomIndex] = key;
-        buckets[randomBucket].payload[randomIndex] = payload;
+        int tempKey = buckets[randomBucket].keys[index];
+        int tempPayload = buckets[randomBucket].payload[index];
         
-        //Recursive call, increment l
-        return build(tempKey, tempPayload, ++l);
+        //Insert the (key, payload) in the oldest bucket
+        buckets[randomBucket].insert(key, payload);
+        
+        //Recursive call, increment l,
+        return insert(tempKey, tempPayload, ++l, randomBucket);
     } else {
         // we had room, do the storage
         Bucket *bucket = &buckets[leastFilledBucket];
-        bucket->keys[bucket->count] = key;
-        bucket->payload[bucket->count] = payload; //Since count = index of last key + 1
-        bucket->count++; //Increments bucket count
+        bucket->insert(key, payload);
         totalCount++; //increments table count
-        return 1;
+        return 1; //Success
     }
 }
 
@@ -171,6 +194,13 @@ uint SplashTable::getRandom(uint min, uint max){
     
     //Return a number from the distribution
     return uniform(engine);
+}
+
+/**
+ * Used for testing to perform statistics outside SplashTable.
+ */
+uint SplashTable::getCount(){
+    return totalCount;
 }
 
 /**
