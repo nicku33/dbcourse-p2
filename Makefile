@@ -1,6 +1,9 @@
 splashapp:
 	g++ -std=c++0x -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp
 
+genfile:
+	g++ -std=c++0x -o gen GenerateFile.cpp ST.cpp Bucket.cpp MHash.cpp
+
 clean:
 	rm probe splash *.o
 	rm -rf *.dSYM
@@ -11,5 +14,6 @@ probeapp:
 
 probeapp-mac:
 	gcc -g -msse3 -o probe simd_probe.c
+
 
 
