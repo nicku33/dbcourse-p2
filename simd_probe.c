@@ -1,14 +1,10 @@
 #include <xmmintrin.h>
 #include <emmintrin.h>
 #include <pmmintrin.h>
-#include <tmmintrin.h>
-/* #include <smmintrin.h> */
-/* #include <nmmintrin.h> */
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
 
-/* #include <ammintrin.h>  AMD ONLY */
 
 unsigned int*  __attribute__ ((aligned (16))) keys;
 unsigned int*  __attribute__ ((aligned (16))) pay;
@@ -20,7 +16,7 @@ int N; // number of filled data points
 int Nm; // number of entries, for conventience
 int Nb;  // number of buckets
 int p;
-const unsigned int w = sizeof(int) * 8; // why ?
+const unsigned int w = sizeof(int) * 8; 
 int hashes[2] ;
 
 // SIMD values which we only need to init once
@@ -29,7 +25,7 @@ __m128i hm;
 
 void initialize_buckets(){
     p=S - log2(B);
-    Nm=(1 << S); 
+    Nm=(1 << S);  // equiv to power^2
     Nb = Nm / B;
 
     // we will allocate a big block
@@ -53,10 +49,12 @@ unsigned int hash(unsigned int key, unsigned int h){
  * K[2^S-1] P[2^S-1]
  */
 void pv(__m128i to, char * s){
-    uint32_t * out =(uint32_t *) &to;
+    unsigned int * out =(unsigned int *) &to;
     printf("%s: %u %u %u %u\n", s, out[3], out[2], out[1], out[0]);
 }
 
+
+/* this was just for debugging */
 void dump_table(char* s){
     int i,j;
     printf("\n%s\n", s);
@@ -80,7 +78,7 @@ unsigned int probe(unsigned int key){
 
     // now we need to extract the buckets
     // cast it as array
-    uint32_t * hsa =(uint32_t *) &hs;
+    unsigned int * hsa =(unsigned int *) &hs;
 
     unsigned int a1=hsa[1]; // the bucket number for first hash
     unsigned int a2=hsa[3]; // the bucket number for second hash
@@ -99,11 +97,11 @@ unsigned int probe(unsigned int key){
     __m128i v2=_mm_and_si128(p2,mask2);
 
     __m128i both=_mm_or_si128(v1, v2);
-
+        
     // I couldn't find or across will do manually
     __m128i to=both;
    
-    uint32_t * ex =(uint32_t *) &to;
+    unsigned int * ex =(unsigned int *) &to;
     unsigned int out = ex[0] | ex[1] | ex[2] | ex [3];  
     return out;
 }
@@ -114,7 +112,7 @@ unsigned int probe(unsigned int key){
 
 int main(int argc, char* argv[]){
 
-   // make sure they included the 
+   // make sure they included the dumpfile param
    if(argc<2){
         printf("The first parameter should be the dumpfile.");
         exit(0);
@@ -145,10 +143,12 @@ int main(int argc, char* argv[]){
     unsigned int key, res;
     while(scanf("%u", &key)==1) {
         res=probe(key);
-        if(res) {
+        if(!res) {
             printf("%u\n", res);
         }
     }
 
+    // TODO: need to free 
+    //
     return 0;
 }
