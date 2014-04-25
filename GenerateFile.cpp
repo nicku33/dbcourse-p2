@@ -22,9 +22,9 @@ uint getRandom(uint min, uint max){
     return uniform(engine);
 }
 
-void testTable(uint B, uint R, uint S, uint h){
+void testTable(uint B, uint R, uint S, uint h, string probename, string inputname){
     SplashTable sTable(B, R, S, h);
-    uint lim = exp2(S);
+    uint lim = exp2(S-1);
     
     //Key limit
     uint keyLim = exp2(32)-1;
@@ -33,12 +33,12 @@ void testTable(uint B, uint R, uint S, uint h){
     uint *keys = new uint[lim];
     uint *payloads = new uint[lim];
     
-    ofstream probeFile;
-    probeFile.open("probe.txt");
+    ofstream probeFile, inputFile;
+    probeFile.open(probename);
+    inputFile.open(inputname);
     int notFirst = 0;
     
     for(uint i = 0; i < lim; i++){
-        
         do{
             keys[i] = getRandom(1,keyLim-1);
         } while(sTable.probe(keys[i]));
@@ -46,7 +46,7 @@ void testTable(uint B, uint R, uint S, uint h){
         payloads[i] = getRandom(1,keyLim-1);
         
         if(sTable.insert(keys[i], payloads[i], 0, -1)){
-            cout << keys[i] << " " << payloads[i] << "\n";
+            inputFile << keys[i] << " " << payloads[i] << "\n";
             if(getRandom(0,1)){
                 if(notFirst){
                     probeFile << "\n";
@@ -61,30 +61,33 @@ void testTable(uint B, uint R, uint S, uint h){
         
     }
     probeFile.close();
-    sTable.dump("dump.txt");
-    
+    inputFile.close();
     delete [] keys;
     delete [] payloads;
 }
 
 int main(int argc, char* argv[]){
     uint B, R, S, h;
-    
+    string probefile; 
+    string inputfile;
     //Initialize arguments
     switch (argc) {
-        case 5: //No dumpfile
+        case 7: //No dumpfile
             B = stoi(argv[1]);
             R = stoi(argv[2]);
             S = stoi(argv[3]);
             h = stoi(argv[4]);
+            probefile=argv[5];
+            inputfile=argv[6];
             break;
         default:
             cout << "Missing arguments:\nB: Bucket size\nR: Recursions\n";
             cout << "S: 2^S entries\nh: Hash functions\n";
+            cout << "probefileout inputfileout\n";
             exit(EXIT_FAILURE);
             break;
     }
-    testTable(B, R, S, h);
+    testTable(B, R, S, h, probefile, inputfile);
 }
 
 

@@ -1,6 +1,8 @@
 #include <xmmintrin.h>
 #include <emmintrin.h>
 #include <pmmintrin.h>
+#include <tmmintrin.h>
+#include <smmintrin.h>
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
@@ -23,6 +25,11 @@ int hashes[2] ;
 __m128i t; // number of tables
 __m128i hm; 
 
+void cleanup(){
+    free(keys);
+    free(pay);
+}
+
 void initialize_buckets(){
     p=S - log2(B);
     Nm=(1 << S);  // equiv to power^2
@@ -34,10 +41,6 @@ void initialize_buckets(){
 
     t=_mm_set_epi32(0, Nb, 0, Nb);
     hm=_mm_set_epi32(0, hashes[1], 0, hashes[0]);
-}
-
-unsigned int hash(unsigned int key, unsigned int h){
-      return(key * h) >> (w - p);
 }
 
 /*
@@ -82,7 +85,7 @@ unsigned int probe(unsigned int key){
 
     unsigned int a1=hsa[1]; // the bucket number for first hash
     unsigned int a2=hsa[3]; // the bucket number for second hash
-     
+    
     a1 = a1 << 2;  // multiply by 4
     a2 = a2 << 2;
 
@@ -97,24 +100,21 @@ unsigned int probe(unsigned int key){
     __m128i v2=_mm_and_si128(p2,mask2);
 
     __m128i both=_mm_or_si128(v1, v2);
-        
-    // I couldn't find or across will do manually
-    __m128i to=both;
-   
-    unsigned int * ex =(unsigned int *) &to;
-    unsigned int out = ex[0] | ex[1] | ex[2] | ex [3];  
+    
+    //Horizontal addition times 2 gives the payload in all slots of sum2
+    __m128i sum1 =_mm_hadd_epi32(both, both);
+    __m128i sum2 =_mm_hadd_epi32(sum1, sum1);
+    
+    //The payload is now in every slot, extract one of them
+    unsigned int out = (unsigned int) _mm_extract_epi32(sum2, 0);
     return out;
 }
-
-// need to do this on initialization
-//    s = multiplier;
-//    p = S-log2(B);
 
 int main(int argc, char* argv[]){
 
    // make sure they included the dumpfile param
    if(argc<2){
-        printf("The first parameter should be the dumpfile.");
+        printf("The first parameter should be the dumpfile.\n");
         exit(0);
    }
 
@@ -125,8 +125,7 @@ int main(int argc, char* argv[]){
     // we can assume that there are only 2 hash functions
     fscanf(f, "%u %u", &hashes[0], &hashes[1]);
 
-    // nof we can loop over the data 
-  
+    // nof we can loop over the data
     initialize_buckets();
     int LIMIT = 1 << S;
     int i;
@@ -143,12 +142,11 @@ int main(int argc, char* argv[]){
     unsigned int key, res;
     while(scanf("%u", &key)==1) {
         res=probe(key);
-        if(!res) {
-            printf("%u\n", res);
+        if(res) {
+            printf("%u %u\n", key, res);
         }
     }
 
-    // TODO: need to free 
-    //
+    cleanup();
     return 0;
 }
