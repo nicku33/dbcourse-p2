@@ -57,25 +57,6 @@ void pv(__m128i to, char * s){
     printf("%s: %u %u %u %u\n", s, out[3], out[2], out[1], out[0]);
 }
 
-/* example of load */
-
-/*
- *
- * char a[N], b[N], c[N];
- * ...
- * __m128i *av, *bv, *cv;
- * av = (__m128i*)a;
- * bv = (__m128i*)b;
- * cv = (__m128i*)c;
- * for (i = 0; i < N/16; i++)
- * { __m128i br = _mm_loadu_si128(&bv[i];
- *   __m128i cr = _mm_loadu_si128(&cv[i];
- *     __m128i ar = _mm_add_epi8(br, cr);
- *       _mm_storeu_si128(&av[i], ar);
- *       }
- *
- */
-
 void dump_table(char* s){
     int i,j;
     printf("\n%s\n", s);
@@ -141,7 +122,7 @@ int main(int argc, char* argv[]){
 
     FILE *f;
     f=fopen(argv[1], "r");
-    // read the params:
+    // read the params
     fscanf(f, "%d %d %d %d", &B, &S, &h, &N);
     // we can assume that there are only 2 hash functions
     fscanf(f, "%u %u", &hashes[0], &hashes[1]);
@@ -164,7 +145,9 @@ int main(int argc, char* argv[]){
     unsigned int key, res;
     while(scanf("%u", &key)==1) {
         res=probe(key);
-        printf("%u\n", res);
+        if(res) {
+            printf("%u\n", res);
+        }
     }
 
     return 0;
