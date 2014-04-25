@@ -3,7 +3,7 @@
 #include <sstream>
 #include <fstream>  //For reading inputfile
 #include <stdlib.h> //exit, EXIT_FAILURE
-#include <Math.h>
+#include <math.h>
 #include <random>
 #include "GenST.h"
 
