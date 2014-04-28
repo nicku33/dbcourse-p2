@@ -3,15 +3,21 @@
 #include <sstream>
 #include <fstream>  //For reading inputfile
 #include <stdlib.h> //exit, EXIT_FAILURE
+#include <limits.h> //random limits
 #include <math.h>
 #include <random>
 #include "GenST.h"
 
 using namespace std;
 
-
 uint getRandom(uint min, uint max){
-     return min + ((uint) rand() % (max - min + 1)); 
+    if((max-min) == UINT_MAX){
+        //Max = UINT_MAX and min = 0
+        return (uint) rand();
+    } else {
+        //Cannot go out of bounds
+        return (uint) min + ((uint) rand() % (max - min + 1));
+    }
 }
 
 void testTable(uint B, uint R, uint S, uint h, string probename, string inputname){
