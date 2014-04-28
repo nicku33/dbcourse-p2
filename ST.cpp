@@ -27,7 +27,7 @@ void SplashTable::init(){
     
     //Initialize all hash functions with random multiplier
     for(int i = 0; i<h; i++){
-        uint r = getRandom(0,UINT_MAX);
+        uint r = getRandom(1,UINT_MAX);
         hashes.push_back(MHash(r,S,B));
     }
 }
@@ -179,7 +179,14 @@ void SplashTable::dump(std::string fileName){
  * External to prevent stack overflow when the recursive limit is > 254
  */
 uint SplashTable::getRandom(uint min, uint max){
-     return min + ((uint) rand() % (max - min + 1)); 
+    if((max-min) == UINT_MAX){
+        //Max = UINT_MAX and min = 0
+        return (uint) rand();
+    } else {
+        //Cannot go out of bounds
+        return min + ((uint) rand() % (max - min + 1));
+    }
+
 }
 
 /**
