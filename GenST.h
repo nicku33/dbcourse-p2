@@ -2,7 +2,7 @@
 #define ____ST__
 #include <string>
 #include <vector>
-#include <Math.h>
+#include <math.h>
 #include <random>
 #include <fstream>
 #include <iostream>

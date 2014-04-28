@@ -11,7 +11,6 @@ using namespace std;
 typedef unsigned int uint;
 
 uint getRandom(uint min, uint max){
-    //Initialize random device and random engine
     std::random_device rd;
     std::mt19937 engine(rd());
     
@@ -20,6 +19,7 @@ uint getRandom(uint min, uint max){
     
     //Return a number from the distribution
     return uniform(engine);
+    
 }
 
 void testTable(uint B, uint R, uint S, uint h, string probename, string inputname){
@@ -70,6 +70,7 @@ int main(int argc, char* argv[]){
     uint B, R, S, h;
     string probefile; 
     string inputfile;
+    srand( time(0));
     //Initialize arguments
     switch (argc) {
         case 7: //No dumpfile
