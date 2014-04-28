@@ -1,0 +1,13 @@
+i
+
+
+A note about our implnementation of random.
+
+On our local computers we used the std::random available wiht C++11 to overcome the probums with uniformity and rand(). However on the CLIC machines we get segfaults inside the standard library that we did not get on local machines.
+ 
+(gdb) frame
+#0  0x00000000004046e8 in std::uniform_int_distribution<int>::param_type::param_type (this=<error reading variable: Cannot access memory at address 0x7fffff7feff8>,
+    __a=<error reading variable: Cannot access memory at address 0x7fffff7feff4>, __b=<error reading variable: Cannot access memory at address 0x7fffff7feff0>)
+    at /usr/include/c++/4.6/bits/random.h:1627
+
+As such we reverted our implementaion to use srand() and rand().
