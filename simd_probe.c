@@ -1,55 +1,30 @@
 #include "simd_probe.h"
 
-void cleanup(){
-    free(keys);
-    free(pay);
-}
 
 void initialize_buckets(){
+    // setup variables we can cache the results of
     p=S - log2(B);
     Nm=(1 << S);  // equiv to power^2
     Nb = Nm / B;
 
-    // we will allocate a big block
+    // we will allocate a big block which we reference by row * B + col
+    // using memalign we should be able to use the aligned SIMD pull instructions
     posix_memalign((void **)&keys, 16, sizeof(unsigned int) * Nm);
     posix_memalign((void **)&pay, 16, sizeof(unsigned int) * Nm);
 
+    // t and hm are constants we use in the SIMD calculations of the hash
     t=_mm_set_epi32(0, Nb, 0, Nb);
     hm=_mm_set_epi32(0, hashes[1], 0, hashes[0]);
 }
 
-/*
- *
- * B S h N
- * H[0] H[1] ... H[h-1] K[0] P[0]
- * K[1] P[1]
- * ...
- * K[2^S-1] P[2^S-1]
- */
-void pv(__m128i to, char * s){
-    unsigned int * out =(unsigned int *) &to;
-    printf("%s: %u %u %u %u\n", s, out[3], out[2], out[1], out[0]);
+void cleanup(){
+    // release memory before we exit
+    free(keys);
+    free(pay);
 }
-
-
-/* this was just for debugging */
-void dump_table(char* s){
-    int i,j;
-    printf("\n%s\n", s);
-    for(i=0; i<Nb; i++){
-        printf("%3d:\t",i);
-        for(j=0; j<B; j++){
-            printf(" %3u:%3u", keys[i*B + j], pay[i*B + j]); 
-        }
-        printf("\n");
-    }
-
-}
-
 
 unsigned int probe(unsigned int key){
 
-    // this stuff applies to both
     __m128i k=_mm_set1_epi32(key);
     __m128i hv= _mm_mul_epu32(hm, k);
     __m128i hs= _mm_mul_epu32(hv, t);

@@ -6,7 +6,7 @@
 rm test_*.txt
 make genapp || exit $?
 make splashapp || exit $?
-make probeapp || exit $?
+make probeapp-mac || exit $?
 
 
 ./a.out 4 1000 15 2 test_probe.txt test_input.txt || exit $?

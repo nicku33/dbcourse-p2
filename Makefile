@@ -1,7 +1,7 @@
 splashapp:
-	g++ -std=c++0x -g -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp
+	g++ -std=c++0x -o splash Main.cpp ST.cpp Bucket.cpp MHash.cpp
 genapp:
-	clang++ -ggdb -std=c++0x GenerateFile.cpp ST.cpp Bucket.cpp MHash.cpp
+	clang++ -std=c++0x GenerateFile.cpp ST.cpp Bucket.cpp MHash.cpp
 
 clean:
 	rm probe splash *.o
@@ -12,7 +12,7 @@ probeapp:
 	gcc -msse4.1 -o probe simd_probe.c /usr/lib/x86_64-linux-gnu/libm.a
 
 probeapp-mac:
-	gcc -g -msse4.1 -o probe simd_probe.c
+	gcc -msse4.1 -o probe simd_probe.c
 
 
 

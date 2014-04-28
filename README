@@ -6,14 +6,17 @@ Question 1
 To build, run "make splashapp" which will create an executable called 'splash'. This has been tested on the CLIC lab machines.
 It can be called as given in the instructions, but use ./splash, obviously, since it's not on the $PATH.
 
-Question 2
-==========
+Question 2 (simd_probe.c)
+=========================
 
-To build, run "make probleapp" which will create an execuatble called 'probe'. This has also been tested on the CLIC machines. Note that while it accepts the parameters from the dump file, it is hard coded to for B=4 and h=2. Note we would it necesssary (if you look at the makefile) to hard code the path to the math.o library. If you are running on a different machine, you may have to adjust that or leave it out.
+To build, run "make probeapp" which will create an execuatble called 'probe'. This has also been tested on the CLIC machines. Note that while it accepts the parameters from the dump file, it is hard coded to for B=4 and h=2. Note we would it necesssary (if you look at the makefile) to hard code the path to the math.o library. If you are running on a different machine, you may have to adjust that or leave it out.
+
+If you would like to relate our code to the diagram in the paper please see SIMD.pdf which is annotated with our variable names.
+
 
 TEST SCRIPT
 ===========
-Test Script: Note we also have an automated test script (./test.sh) which generates probe and input data, runs against Q1, Q2 and compares the result files. In tests on the CLIC machines, we have seen identical output.
+Note we also have an automated test script (./test.sh) which generates probe and input data, runs against Q1, Q2 and compares the result files. In tests on the CLIC machines, we have seen identical output. If not, diff will dump out the differences. 
 
 
 A note about our implementation of random.
