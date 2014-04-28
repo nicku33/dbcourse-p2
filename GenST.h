@@ -4,6 +4,7 @@
 #include <vector>
 #include <math.h>
 #include <random>
+#include <limits.h>
 #include <fstream>
 #include <iostream>
 #include "MHash.h"

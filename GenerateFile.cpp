@@ -8,18 +8,10 @@
 #include "GenST.h"
 
 using namespace std;
-typedef unsigned int uint;
+
 
 uint getRandom(uint min, uint max){
-    std::random_device rd;
-    std::mt19937 engine(rd());
-    
-    //Initialize uniform distribution
-    std::uniform_int_distribution<> uniform(min,max);
-    
-    //Return a number from the distribution
-    return uniform(engine);
-    
+     return min + ((uint) rand() % (max - min + 1)); 
 }
 
 void testTable(uint B, uint R, uint S, uint h, string probename, string inputname){
@@ -37,14 +29,14 @@ void testTable(uint B, uint R, uint S, uint h, string probename, string inputnam
     probeFile.open(probename);
     inputFile.open(inputname);
     int notFirst = 0;
-    
+
     for(uint i = 0; i < lim; i++){
         do{
             keys[i] = getRandom(1,keyLim-1);
         } while(sTable.probe(keys[i]));
         
         payloads[i] = getRandom(1,keyLim-1);
-        
+	        
         if(sTable.insert(keys[i], payloads[i], 0, -1)){
             inputFile << keys[i] << " " << payloads[i] << "\n";
             if(getRandom(0,1)){

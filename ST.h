@@ -4,6 +4,7 @@
 #include <math.h> //exp2(S)
 #include <random> //For random bucket
 #include <fstream> //For dump method
+#include <limits.h> //random limits
 #include "MHash.h"
 #include "Bucket.h"
 

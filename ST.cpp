@@ -24,17 +24,11 @@ void SplashTable::init(){
         buckets.push_back(Bucket(B));
     }
     
-    //Initilizes random number generator
-    std::random_device rd;
-    std::mt19937 engine(rd());
-    
-    //Since max of 32 bit int is 2^32-1
-    std::uniform_int_distribution<> uni_hash(1,exp2(32)-1); //For hashes, only used in init()
     
     //Initialize all hash functions with random multiplier
     for(int i = 0; i<h; i++){
-        uint random = uni_hash(engine);
-        hashes.push_back(MHash(random,S,B));
+        uint r = getRandom(0,UINT_MAX-1);
+        hashes.push_back(MHash(r,S,B));
     }
 }
 /**
@@ -185,15 +179,7 @@ void SplashTable::dump(std::string fileName){
  * External to prevent stack overflow when the recursive limit is > 254
  */
 uint SplashTable::getRandom(uint min, uint max){
-    //Initialize random device and random engine
-    std::random_device rd;
-    std::mt19937 engine(rd());
-    
-    //Initialize uniform distribution
-    std::uniform_int_distribution<> uniform(min,max);
-    
-    //Return a number from the distribution
-    return uniform(engine);
+     return min + ((uint) rand() % (max - min + 1)); 
 }
 
 /**
