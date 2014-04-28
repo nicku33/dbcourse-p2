@@ -36,19 +36,23 @@ unsigned int probe(unsigned int key){
     unsigned int a1=hsa[1]; // the bucket number for first hash
     unsigned int a2=hsa[3]; // the bucket number for second hash
     
-    a1 = a1 << 2;  // multiply by 4
+    a1 = a1 << 2;  // multiply by 4 (B)
     a2 = a2 << 2;
 
+
+    // apply mask and get payload for left side
     __m128i k1 = _mm_load_si128((__m128i *) &(keys[0 + a1]));
     __m128i mask1=_mm_cmpeq_epi32(k,k1);
     __m128i p1 = _mm_load_si128((__m128i *) &(pay[0 + a1]));
     __m128i v1=_mm_and_si128(p1,mask1);
-   
+  
+    // same to right side
     __m128i k2 = _mm_load_si128((__m128i *) &(keys[0 + a2]));
     __m128i mask2=_mm_cmpeq_epi32(k,k2);
     __m128i p2 = _mm_load_si128((__m128i *) &(pay[0 + a2]));
     __m128i v2=_mm_and_si128(p2,mask2);
 
+    // merge them 
     __m128i both=_mm_or_si128(v1, v2);
     
     //Horizontal addition times 2 gives the payload in all slots of sum2
@@ -68,6 +72,7 @@ int main(int argc, char* argv[]){
         exit(0);
    }
 
+    // open the dumpfile
     FILE *f;
     f=fopen(argv[1], "r");
     // read the params
