@@ -1,9 +1,24 @@
-i
+README file for W4112 Homework 2
 
 
-A note about our implnementation of random.
+Question 1
+==========
+To build, run "make splashapp" which will create an executable called 'splash'. This has been tested on the CLIC lab machines.
+It can be called as given in the instructions, but use ./splash, obviously, since it's not on the $PATH.
 
-On our local computers we used the std::random available wiht C++11 to overcome the probums with uniformity and rand(). However on the CLIC machines we get segfaults inside the standard library that we did not get on local machines.
+Question 2
+==========
+
+To build, run "make probleapp" which will create an execuatble called 'probe'. This has also been tested on the CLIC machines. Note that while it accepts the parameters from the dump file, it is hard coded to for B=4 and h=2. Note we would it necesssary (if you look at the makefile) to hard code the path to the math.o library. If you are running on a different machine, you may have to adjust that or leave it out.
+
+TEST SCRIPT
+===========
+Test Script: Note we also have an automated test script (./test.sh) which generates probe and input data, runs against Q1, Q2 and compares the result files. In tests on the CLIC machines, we have seen identical output.
+
+
+A note about our implementation of random.
+=========================================
+On our local computers we used the std::random available wiht C++11 to overcome the problems with uniformity and rand(). (Google 'rand considered harmful'). However on the CLIC machines we get segfaults inside the standard library that we did not get on local machines.
  
 (gdb) frame
 #0  0x00000000004046e8 in std::uniform_int_distribution<int>::param_type::param_type (this=<error reading variable: Cannot access memory at address 0x7fffff7feff8>,
