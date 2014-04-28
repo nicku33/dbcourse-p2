@@ -27,7 +27,7 @@ void SplashTable::init(){
     
     //Initialize all hash functions with random multiplier
     for(int i = 0; i<h; i++){
-        uint r = getRandom(0,UINT_MAX-1);
+        uint r = getRandom(0,UINT_MAX);
         hashes.push_back(MHash(r,S,B));
     }
 }
