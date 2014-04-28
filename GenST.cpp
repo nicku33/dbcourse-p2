@@ -174,7 +174,13 @@ void SplashTable::dump(std::string fileName){
  * External to prevent stack overflow when the recursive limit is > 254
  */
 uint SplashTable::getRandom(uint min, uint max){
-     return min + ((uint) rand() % (max - min + 1)); 
+    if((max-min) == UINT_MAX){
+        //Max = UINT_MAX and min = 0
+        return (uint) rand();
+    } else {
+        //Cannot go out of bounds
+        return (uint) min + ((uint) rand() % (max - min + 1));
+    }
 }
 
 /**
