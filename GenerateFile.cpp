@@ -11,12 +11,15 @@
 using namespace std;
 
 uint getRandom(uint min, uint max){
-    if((max-min) == UINT_MAX){
-        //Max = UINT_MAX and min = 0
-        return (uint) rand();
+    uint u1 = 0x0000ffffU & (uint) rand();
+    uint u2 = 0x0000ffffU & (uint) rand();
+    u1 = u1 << 16;
+    u1 = u1 | u2;
+    
+    if((max - min) == UINT_MAX){
+        return u1;
     } else {
-        //Cannot go out of bounds
-        return (uint) min + ((uint) rand() % (max - min + 1));
+        return min + (u1 % (max - min + 1));
     }
 }
 
